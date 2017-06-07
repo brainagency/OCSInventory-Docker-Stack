@@ -1,37 +1,68 @@
 version: '3'
-services :
-  web :
-    image : ocsinventory/ocsinventory-docker-image:latest
-    container_name : ocsinventory-server
-    environment :
-      OCS_DBNAME : ocsweb
-      OCS_DBSERVER_READ : ocsinventory-db
-      OCS_DBSERVER_WRITE : ocsinventory-db
-      OCS_DBUSER : ocs
-      OCS_DBPASS : ocs
-    volumes :
+services:
+  ocsinventory:
+    image: ocsinventory/ocsinventory-docker-image:latest
+    container_name: ocsinventory-server
+    environment:
+      OCS_DBNAME: ocsweb
+      OCS_DBSERVER_READ: ocsinventory-db
+      OCS_DBSERVER_WRITE: ocsinventory-db
+      OCS_DBUSER: ocs
+      OCS_DBPASS: ocs
+    volumes:
       - ocssrv:/usr/share/ocsinventory-reports/
       - ocssrv:/etc/ocsinventory-reports/
       - ocssrv:/var/lib/ocsinventory-reports/
-    links :
+    links:
       - db
-    ports :
-      - 80:80
-      - 443:443
+    ports:
+      - 8090:80
+    #   - 443:443
 
-  db :
-    image : mysql:5.7
-    container_name : ocsinventory-db
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile-glpi
+    container_name: glpi-server
+    volumes:
+      - ./glpi:/var/www/html
+    links:
+      - db
+      - ocsinventory
+    # healthcheck:
+    #   test: "SCRIPT_NAME=/ping SCRIPT_FILENAME=/ping REQUEST_METHOD=GET cgi-fcgi -bind -connect 127.0.0.1:9000"
+    #   interval: 1m
+    #   timeout: 30s
+    #   retries: 3
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./glpi:/var/www/html
+    links:
+      - php
+      - db
+      - ocsinventory
+    # depends_on:
+    #    - php
+
+  db:
+    image: mysql:5.7
+    container_name: ocsinventory-db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD : mdp
-      MYSQL_USER : ocs
-      MYSQL_PASSWORD : ocs
-      MYSQL_DATABASE : ocsweb
-    volumes :
+      MYSQL_ROOT_PASSWORD: mdp
+      MYSQL_USER: ocs
+      MYSQL_PASSWORD: ocs
+      MYSQL_DATABASE: ocsweb
+    volumes:
       - ./sql/:/docker-entrypoint-initdb.d/
       - ocsdata:/var/lib/mysql
-    ports :
+    ports:
       - 3306:3306
 
 volumes:
