@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y \
 RUN sed 's/;ping.path = \/ping/ping.path = \/ping/' -i /usr/local/etc/php-fpm.d/www.conf
 
 # Installing composer
-# RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Create app dir
 RUN mkdir -p /var/www/html
@@ -27,5 +27,5 @@ WORKDIR /var/www/html
 
 # Entry point
 EXPOSE 9000
-# CMD composer install --no-dev && php-fpm
-CMD ["php-fpm"]
+CMD composer install --no-dev && php-fpm
+# CMD ["php-fpm"]
