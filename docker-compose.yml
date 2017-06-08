@@ -4,7 +4,7 @@ services:
     image: ocsinventory/ocsinventory-docker-image:latest
     container_name: ocsinventory-server
     environment:
-      OCS_DBNAME: ocsweb
+      OCS_DBNAME: ocs
       OCS_DBSERVER_READ: ocsinventory-db
       OCS_DBSERVER_WRITE: ocsinventory-db
       OCS_DBUSER: ocs
@@ -16,8 +16,7 @@ services:
     links:
       - db
     ports:
-      - 8090:80
-    #   - 443:443
+      - 8080:80
 
   php:
     build:
@@ -29,11 +28,6 @@ services:
     links:
       - db
       - ocsinventory
-    # healthcheck:
-    #   test: "SCRIPT_NAME=/ping SCRIPT_FILENAME=/ping REQUEST_METHOD=GET cgi-fcgi -bind -connect 127.0.0.1:9000"
-    #   interval: 1m
-    #   timeout: 30s
-    #   retries: 3
 
   nginx:
     image: nginx:latest
@@ -47,18 +41,16 @@ services:
       - php
       - db
       - ocsinventory
-    # depends_on:
-    #    - php
 
   db:
     image: mysql:5.7
     container_name: ocsinventory-db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: mdp
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: ocs
       MYSQL_PASSWORD: ocs
-      MYSQL_DATABASE: ocsweb
+      MYSQL_DATABASE: ocs
     volumes:
       - ./sql/:/docker-entrypoint-initdb.d/
       - ocsdata:/var/lib/mysql
