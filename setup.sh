@@ -5,7 +5,13 @@ git submodule update
 
 # Install ocsinventoryng plugin
 rm -rf glpi/plugins/ocsinventoryng/
-cp -avr ocsinventoryng/ glpi/plugins/ocsinventoryng/
+cp -ar ocsinventoryng/ glpi/plugins/ocsinventoryng/
 
 # Staring docker stack
-docker-compose up --build -d
+unset CHECK
+docker-compose up --build -d && \
+until [[ $CHECK == 0 ]]; do
+	docker logs glpi-server 2>&1 | grep 'fpm is running' > /dev/null 2>&1
+	export CHECK=$?
+done \
+&& echo "ENV is up & running"
