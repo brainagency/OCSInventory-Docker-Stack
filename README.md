@@ -63,7 +63,7 @@ environment:
 > MYSQL_ROOT_PASSWORD : changeme  <br>
 > MYSQL_USER : ocs <br> 
 > MYSQL_PASSWORD : ocs <br> 
-> MYSQL_DATABASE : ocsweb 
+> MYSQL_DATABASE : ocs 
 
 ----------
 
@@ -71,7 +71,7 @@ environment:
 
 environment :
 
-> OCS_DBNAME : ocsweb <br>
+> OCS_DBNAME : ocs <br>
 > OCS_DBSERVER_READ : ocsinventory-db <br>
 > OCS_DBSERVER_WRITE : ocsinventory-db <br>
 > OCS_DBUSER : ocs <br>
