@@ -7,6 +7,7 @@ git submodule update
 rm -rf glpi/plugins/ocsinventoryng/
 cp -ar ocsinventoryng/ glpi/plugins/ocsinventoryng/
 cp config_db.php glpi/config/
+chmod -R 777 glpi/
 
 # Staring docker stack
 unset CHECK
@@ -15,4 +16,4 @@ until [[ $CHECK == 0 ]]; do
 	docker logs glpi-server 2>&1 | grep 'fpm is running' > /dev/null 2>&1
 	export CHECK=$?
 done \
-&& echo "ENV is up & running"
+&& printf "=====================\n ENV is up & running\n=====================\n"
