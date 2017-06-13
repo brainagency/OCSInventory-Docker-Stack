@@ -120,6 +120,31 @@ By default:
 
 Attention do not remove these volumes without having planned backup, otherwise you will lose your data.
 
+<h2 align="center">GLPI integration</h2>
+<p align='justify'>
+GLPI stands for Gestionnaire Libre de Parc Informatique is a Free Asset and IT Management Software package, that provides ITIL Service Desk features, licenses tracking and software auditing. http://glpi-project.org/
+<br />
+GitHub - https://github.com/glpi-project/glpi
+</p>
+
+----------
+
+## How to run it
+Just simply run:
+> sudo echo "127.0.0.1	glpi.app" >> /etc/hosts
+
+> bash setup.sh
+
+It will start up all the environment:
+
+1. OCS stack
+2. GLPI project + DB & config
+3. OCSinventoryng plugin
+
+Go to http://glpi.app with the default credentials:
+login - glpi
+pass - glpi 
+
 ## Contributing
 
 1. Fork it!
