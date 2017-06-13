@@ -6,6 +6,7 @@ git submodule update
 # Install ocsinventoryng plugin
 rm -rf glpi/plugins/ocsinventoryng/
 cp -ar ocsinventoryng/ glpi/plugins/ocsinventoryng/
+cp config_db.php glpi/config/
 
 # Staring docker stack
 unset CHECK
