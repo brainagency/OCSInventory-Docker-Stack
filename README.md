@@ -142,8 +142,12 @@ It will start up all the environment:
 3. OCSinventoryng plugin
 
 Go to http://glpi.app with the default credentials:
+
 login - glpi
+
 pass - glpi 
+
+----------
 
 ## Contributing
 
