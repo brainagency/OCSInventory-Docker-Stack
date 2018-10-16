@@ -1,6 +1,0 @@
-[submodule "glpi"]
-	path = glpi
-	url = git@github.com:glpi-project/glpi.git
-[submodule "ocsinventoryng"]
-	path = ocsinventoryng
-	url = git@github.com:pluginsGLPI/ocsinventoryng.git

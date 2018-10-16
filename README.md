@@ -1,3 +1,46 @@
+# GLPI with OCS inventory
+
+## TL;DR
+
+#### Install
+
+First script will start app in order to install it then download plugin OCS for GLPIa
+
+`chmod 777 ./setup.sh && ./setup.sh`
+
+#### Start
+
+With 
+
+`docker-compose up`
+
+It will start up all the environment:
+
+1. OCS stack on port `8080`
+2. GLPI project + DB & config on port `80`
+
+#### GLPI
+
+Go to `http://localhost` with the default credentials:
+
+login - glpi
+
+pass - glpi 
+
+#### OCS Inventory Server
+
+Go to `http://localhost:8080` with the default credentials:
+
+login - admin
+
+pass - admin
+
+##### URI 
+
+On OCS inventory URL are `/ocsreports`, `/download` and `/snmp`, and for all client agent, configuration have to send infor;ation to URI `/ocsinventory` for send informations.
+
+-----
+
 <p align="center">
   <img src="https://cdn.ocsinventory-ng.org/common/banners/banner660px.png" height=300 width=660 alt="Banner">
 </p>
@@ -37,52 +80,37 @@ This repository contains the needed files to build and run the OCS stack in his 
 This stack is based on the official [Debian image](https://hub.docker.com/_/debian/) and official [MYSQL image](https://hub.docker.com/_/mysql/), you can find them on the [Docker hub](https://hub.docker.com/explore/).
 We include a MYSQL container with pre-configured with the required database settings.
 
-###Build instructions
-
-We use docker-compose to build these images. Clone this repo and then:
-
-> sudo git clone https://github.com/OCSInventory-NG/OCSInventory-Docker-Stack.git <br>
-> cd OCSInventory-Docker-Stack <br>
-> sudo docker-compose build 
-
-This command will build all the images and pull the latest version.
-
-----------
-You can also find a prebuilt image for OCSInventory without MYSQL server from our [Docker Hub repository](https://hub.docker.com/r/ocsinventory/ocsinventory-docker-image/) or our [Github](https://github.com/OCSInventory-NG/OCSInventory-Docker-Image), which can be pulled with this command:
-
-> sudo docker pull ocsinventory/ocsinventory-docker-image:master
-
-###How to run it
-
 By default, when the OCSInventory container is running it will load a default OCSInventory installation that is ready to be used. However, you can run the installer by defining one of these env variables, you can find them in the docker-compose.YML
 
 ####MYSQL container :
 
 environment:
-
-> MYSQL_ROOT_PASSWORD : changeme  <br>
-> MYSQL_USER : ocs <br> 
-> MYSQL_PASSWORD : ocs <br> 
-> MYSQL_DATABASE : ocs 
-
+```
+MYSQL_ROOT_PASSWORD : changeme 
+MYSQL_USER : ocs 
+MYSQL_PASSWORD : ocs 
+MYSQL_DATABASE : ocs 
+```
 ----------
 
 ####OCSInventory-server container :
 
 environment :
-
-> OCS_DBNAME : ocs <br>
-> OCS_DBSERVER_READ : ocsinventory-db <br>
-> OCS_DBSERVER_WRITE : ocsinventory-db <br>
-> OCS_DBUSER : ocs <br>
-> OCS_DBPASS : ocs
-
+```
+OCS_DBNAME : ocs
+OCS_DBSERVER_READ : db-ocs
+OCS_DBSERVER_WRITE : db-ocs
+OCS_DBUSER : ocs
+OCS_DBPASS : ocs
+```
 These values are the default values for OCSInventory.
 After adjusting the docker-compose.yml, you can test the containers with docker-compose
 
-> cd OCSInventory-Docker-Stack <br>
-> sudo docker-compose build <br>
-> sudo docker-compose up
+```
+cd OCSInventory-Docker-Stack
+sudo docker-compose build
+sudo docker-compose up
+```
 
 This will bring up all needed containers, link them and mount data volumes according to the docker-compose.yml configuration file.
 
@@ -90,15 +118,15 @@ This will bring up all needed containers, link them and mount data volumes accor
 
 The docker exec command allows you to run commands inside a Docker container. The following command line will give you a bash shell inside your OCSInventory container:
 
-> sudo docker exec -it ocsinventory-server bash
+```sudo docker exec -it ocsinventory-server bash```
 
 or
 
-> sudo docker exec -it ocsinventory-db bash
+```sudo docker exec -it ocsinventory-db bash```
 
 You can access the logs from the container OCSInventory through Docker container log:
 
-> sudo docker logs ocsinventory-server
+```sudo docker logs ocsinventory-server```
 
 or
 
@@ -113,10 +141,14 @@ By default:
 **ocsdata** for the MYSQL service
    - /var/lib/mysql/
 
+**glpidata** for the MYSQL service
+   - /var/lib/mysql/
+
 **ocssrv** for service OCSInventory 
    - /usr/share/ocsinventory-reports/
    - /etc/ocsinventory-reports/
    - /var/lib/ocsinventory-reports/
+
 
 Attention do not remove these volumes without having planned backup, otherwise you will lose your data.
 
@@ -127,25 +159,6 @@ GLPI stands for Gestionnaire Libre de Parc Informatique is a Free Asset and IT M
 GitHub - https://github.com/glpi-project/glpi
 </p>
 
-----------
-
-## How to run it
-Just simply run:
-> sudo echo "127.0.0.1	glpi.app" >> /etc/hosts
-
-> bash setup.sh
-
-It will start up all the environment:
-
-1. OCS stack
-2. GLPI project + DB & config
-3. OCSinventoryng plugin
-
-Go to http://glpi.app with the default credentials:
-
-login - glpi
-
-pass - glpi 
 
 ----------
 

@@ -5,46 +5,49 @@ services:
     container_name: ocsinventory-server
     environment:
       OCS_DBNAME: ocs
-      OCS_DBSERVER_READ: ocsinventory-db
-      OCS_DBSERVER_WRITE: ocsinventory-db
+      OCS_DBSERVER_READ: db-ocs
+      OCS_DBSERVER_WRITE: db-ocs
       OCS_DBUSER: ocs
       OCS_DBPASS: ocs
     volumes:
       - ocssrv:/usr/share/ocsinventory-reports/
       - ocssrv:/etc/ocsinventory-reports/
       - ocssrv:/var/lib/ocsinventory-reports/
-    links:
-      - db
     ports:
       - 8080:80
 
   php:
-    build:
-      context: .
-      dockerfile: Dockerfile-glpi
+    depends_on: 
+      - glpi
+    image: php:7.0-fpm
     container_name: glpi-server
     volumes:
-      - ./glpi:/var/www/html
-    links:
-      - db
-      - ocsinventory
+      - ./glpi:/var/www/html  
 
   nginx:
+    depends_on: 
+      - glpi
     image: nginx:latest
     container_name: nginx
-    ports:
-      - "80:80"
     volumes:
       - ./nginx:/etc/nginx/conf.d
       - ./glpi:/var/www/html
-    links:
-      - php
-      - db
-      - ocsinventory
 
-  db:
+  db-glpi:
     image: mysql:5.7
-    container_name: ocsinventory-db
+    container_name: glpi-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: glpi
+      MYSQL_PASSWORD: glpi
+      MYSQL_DATABASE: glpi
+    volumes:
+      - glpidata:/var/lib/mysql
+
+  db-ocs:
+    image: mysql:5.7
+    container_name: ocs-db
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -54,11 +57,22 @@ services:
     volumes:
       - ./sql/:/docker-entrypoint-initdb.d/
       - ocsdata:/var/lib/mysql
+
+  #GLPI Container
+  glpi:
+    image: diouxx/glpi
+    container_name : glpi
     ports:
-      - 3306:3306
+      - "80:80"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - ./glpi:/var/www/html/glpi
+    environment:
+      - TIMEZONE=Europe/Paris
+    restart: always
 
 volumes:
   ocsdata:
-    driver: local
+  glpidata:
   ocssrv:
-    driver: local
